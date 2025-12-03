@@ -15,6 +15,7 @@ public class Day1 {
 
 		System.out.println(countPointingZero(combs));
 		System.out.println(countAllZeros(combs));
+		System.out.println(countAllZerosBruteForce(combs));
 	}
 
 	private static int countPointingZero(final List<Integer> combs) {
@@ -33,16 +34,43 @@ public class Day1 {
 
 	private static int countAllZeros(List<Integer> combs) {
 		int current = 50;
+		int incr;
 		int pass = 0;
 		for (Integer comb : combs) {
 			current += comb;
+			incr = current == comb ? -1 : 0;
 			if (current > 0) {
-				pass += current / 100;
+				incr = current / 100;
 			} else if (current < 0) {
-				pass += (-current - 1) / 100 + 1;
+				incr += Math.abs(current / 100) + 1;
+			} else {
+				incr += 1;
 			}
-			current = (current % 100 + 100) % 100;
+			current = ((current % 100) + 100) % 100;
+			pass += Math.max(incr, 0);
+		}
+		return pass;
+	}
 
+	private static int countAllZerosBruteForce(List<Integer> combs) {
+		int current = 50;
+		int pass = 0;
+
+		for (int comb : combs) {
+			int steps = Math.abs(comb);
+			boolean left = comb < 0;
+
+			for (int i = 0; i < steps; i++) {
+				if (left) {
+					current = (current - 1 + 100) % 100;
+				} else {
+					current = (current + 1) % 100;
+				}
+
+				if (current == 0) {
+					pass++;
+				}
+			}
 		}
 		return pass;
 	}
